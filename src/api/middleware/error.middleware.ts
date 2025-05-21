@@ -1,4 +1,3 @@
-// src/api/middleware/error.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../../types';
 import logger from '../../utils/logger';
