@@ -9,7 +9,7 @@
     "dev": "ts-node-dev --respawn src/index.ts",
     "setup-db": "ts-node scripts/setup-db.ts",
     "seed-data": "ts-node scripts/seed-data.ts",
-    "mcp-server": "ts-node src/mcp/server.ts",
+    "mcp-server": "ts-node src/mcp/custom-server.ts",
     "test": "jest",
     "lint": "eslint . --ext .ts"
   },
@@ -24,9 +24,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/server": "^1.0.0",
-    "@modelcontextprotocol/server-postgres": "^1.0.0",
-    "@types/pg": "^8.10.9",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -34,6 +31,7 @@
     "helmet": "^7.1.0",
     "openai": "^4.20.1",
     "pg": "^8.11.3",
+    "socket.io": "^4.7.2",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
@@ -42,6 +40,7 @@
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.10",
     "@types/node": "^20.10.0",
+    "@types/pg": "^8.10.9",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "eslint": "^8.54.0",

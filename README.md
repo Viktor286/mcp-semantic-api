@@ -15,7 +15,7 @@ Semantic search backend using TypeScript, PostgreSQL with the pgvector, and MCP 
 - Node.js (v16+)
 - Docker and Docker Compose
 - PostgreSQL (with pgvector extension)
-  - OpenAI API key (for generating embeddings)
+- OpenAI API key (for generating embeddings)
 
 ## Getting Started
 
@@ -93,11 +93,18 @@ npm run mcp-server
 
 - `GET /api/search?query={text}` - Perform semantic search
 
-## Using the MCP Server
+## Using Custom MCP Server
 
-The MCP server enables AI assistants to interact with semantic search system. It provides tools for querying the database, adding documents, and performing semantic searches.
+The custom MCP server implementation enables AI assistants to interact with your semantic search system through HTTP and WebSocket connections.
+It provides tools for querying the database, adding documents, and performing semantic searches.
 
-### Public MCP Tools
+### MCP Server Endpoints
+
+- `GET /schema` - Get the schema of available tools
+- `POST /tools/:name` - Execute a tool
+- `GET /health` - Check the health of the MCP server
+
+### Available MCP Tools
 
 - `getDocuments` - Get documents with pagination
 - `getDocument` - Get a document by ID
@@ -107,25 +114,70 @@ The MCP server enables AI assistants to interact with semantic search system. It
 - `semanticSearch` - Perform semantic search
 - `getDatabaseInfo` - Get database information
 
-### Connecting to Claude
+### Connecting AI Assistants
 
-1. Configure Claude Desktop to connect to your MCP server:
+To connect an AI assistant to your custom MCP server:
 
-```json
-{
-  "mcpServers": {
-    "semanticSearch": {
-      "command": "node",
-      "args": ["path/to/semantic-search/dist/mcp/server.js"]
-    }
+1. Start the MCP server using `npm run mcp-server`
+2. Configure your AI assistant to connect to the MCP server at `http://localhost:8080`
+3. The AI assistant can access the schema at `http://localhost:8080/schema`
+4. Tools can be executed via HTTP POST requests to `http://localhost:8080/tools/:name`
+5. WebSocket connections can be established at `ws://localhost:8080`
+
+### Example MCP Client
+
+Here's a simple example of how to create a client that connects to the MCP server:
+
+```typescript
+import axios from 'axios';
+import { io } from 'socket.io-client';
+
+// HTTP Client
+const httpClient = {
+  async getSchema() {
+    const response = await axios.get('http://localhost:8080/schema');
+    return response.data;
+  },
+  
+  async executeTool(toolName, params) {
+    const response = await axios.post(`http://localhost:8080/tools/${toolName}`, params);
+    return response.data.result;
   }
-}
+};
+
+// WebSocket Client
+const socket = io('http://localhost:8080');
+
+socket.on('connect', () => {
+  console.log('Connected to MCP server');
+  
+  // Execute a tool
+  socket.emit('execute_tool', {
+    tool: 'semanticSearch',
+    params: {
+      query: 'vector databases',
+      similarityThreshold: 0.7,
+      maxResults: 5
+    }
+  }, (response) => {
+    if (response.error) {
+      console.error('Error:', response.error);
+    } else {
+      console.log('Results:', response.result);
+    }
+  });
+});
+
+socket.on('disconnect', () => {
+  console.log('Disconnected from MCP server');
+});
 ```
 
-2. Use Claude to interact with your semantic search system:
+## Notes on MCP Implementation
 
-```
-Claude, please use the semanticSearch tool to find documents about vector databases.
-```
+This project uses a custom implementation of the Model Context Protocol (MCP) rather than the official packages.
+The custom implementation provides similar functionality:
 
-🎉 Win!
+- Tool registration and execution
+- HTTP endpoints for schema retrieval and tool execution
+- WebSocket support for real-time communication

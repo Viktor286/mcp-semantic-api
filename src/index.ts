@@ -7,9 +7,7 @@ import searchRoute from './api/routes/search.route';
 import { errorHandler, notFoundHandler } from './api/middleware/error.middleware';
 import logger from './utils/logger';
 import dbService from './services/db.service';
-import startMcpServer from './mcp/server';
-
-dotenv.config(); // This was the original position
+import CustomMcpServer from './mcp/custom-server';
 
 // Create Express server
 const app: Express = express();
@@ -94,8 +92,10 @@ const startServer = async () => {
             logger.info(`API documentation available at http://localhost:${port}/`);
         });
 
-        // Start the MCP server
-        await startMcpServer();
+        // Start the MCP server (but not in the same process)
+        const mcpPort = parseInt(process.env.MCP_SERVER_PORT || '8080', 10);
+        logger.info(`MCP server can be started separately on port ${mcpPort}`);
+        logger.info(`Run 'npm run mcp-server' to start the MCP server`);
     } catch (error) {
         logger.error('Failed to start server', error);
         process.exit(1);

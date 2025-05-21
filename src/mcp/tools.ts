@@ -1,7 +1,7 @@
 import documentModel from '../models/document.model';
 import searchService from '../services/search.service';
 import logger from '../utils/logger';
-import { McpTool, ApiError } from '../types'; // Import ApiError
+import { McpTool } from '../types';
 
 // Define the MCP tools
 export const mcpTools: McpTool[] = [
@@ -98,7 +98,7 @@ export const mcpTools: McpTool[] = [
         func: async ({ id }) => {
             const document = await documentModel.getDocumentById(id);
             if (!document) {
-                throw new ApiError(`Document with ID ${id} not found`, 404); // Use ApiError
+                throw new Error(`Document with ID ${id} not found`);
             }
             return document;
         }
@@ -230,7 +230,7 @@ export const mcpTools: McpTool[] = [
         func: async ({ id }) => {
             const success = await documentModel.deleteDocument(id);
             if (!success) {
-                throw new ApiError(`Document with ID ${id} not found`, 404); // Use ApiError
+                throw new Error(`Document with ID ${id} not found`);
             }
             return { success };
         }
@@ -294,13 +294,3 @@ export const mcpTools: McpTool[] = [
         }
     }
 ];
-
-// Convert the McpTool array to McpToolDefinition array for the server
-export const getToolDefinitions = () => {
-    return mcpTools.map(tool => ({
-        name: tool.name,
-        description: tool.description,
-        parameters: tool.parameters,
-        returns: tool.returns
-    }));
-};
