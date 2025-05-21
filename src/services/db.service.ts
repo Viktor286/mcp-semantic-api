@@ -1,4 +1,3 @@
-// src/services/db.service.ts
 import { Pool, QueryResult } from 'pg';
 import pool from '../config/db.config';
 import logger from '../utils/logger';

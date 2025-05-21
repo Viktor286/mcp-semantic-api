@@ -1,4 +1,3 @@
-// src/services/search.service.ts
 import documentModel, { SearchResult } from '../models/document.model';
 import embeddingService from './embedding.service';
 import logger from '../utils/logger';
