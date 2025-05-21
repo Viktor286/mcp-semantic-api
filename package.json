@@ -1,0 +1,54 @@
+{
+  "name": "semantic-search",
+  "version": "1.0.0",
+  "description": "Semantic search with TypeScript, PostgreSQL, pgvector, and MCP",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "setup-db": "ts-node scripts/setup-db.ts",
+    "seed-data": "ts-node scripts/seed-data.ts",
+    "mcp-server": "ts-node src/mcp/server.ts",
+    "test": "jest",
+    "lint": "eslint . --ext .ts"
+  },
+  "keywords": [
+    "typescript",
+    "postgresql",
+    "pgvector",
+    "semantic-search",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/server": "^1.0.0",
+    "@modelcontextprotocol/server-postgres": "^1.0.0",
+    "@types/pg": "^8.10.9",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "openai": "^4.20.1",
+    "pg": "^8.11.3",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.10",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.2"
+  }
+}
