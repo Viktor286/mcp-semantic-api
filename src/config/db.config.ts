@@ -1,4 +1,3 @@
-// src/config/db.config.ts
 import { Pool, PoolConfig } from 'pg';
 import dotenv from 'dotenv';
 import logger from '../utils/logger';

@@ -1,4 +1,3 @@
-// src/models/document.model.ts
 import dbService from '../services/db.service';
 import logger from '../utils/logger';
 

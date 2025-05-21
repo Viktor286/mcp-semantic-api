@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 // Request types
 export interface CreateDocumentRequest {
     title: string;
