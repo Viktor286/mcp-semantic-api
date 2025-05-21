@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import documentModel from '../../models/document.model';
 import searchService from '../../services/search.service';
 import logger from '../../utils/logger';
-import { ApiError, CreateDocumentRequest, UpdateDocumentRequest } from '../../types';
+import { ApiError } from '../../types'; // Remove CreateDocumentRequest, UpdateDocumentRequest
+import { createDocumentSchema, updateDocumentSchema } from '../../schemas/api.schema'; // Import Zod schemas
+import { z } from 'zod'; // Import z from zod
 
 export const getDocuments = async (
     req: Request,
@@ -10,12 +12,17 @@ export const getDocuments = async (
     next: NextFunction
 ) => {
     try {
-        const page = parseInt(req.query.page as string || '1', 10);
-        const pageSize = parseInt(req.query.pageSize as string || '10', 10);
-
-        if (page < 1 || pageSize < 1) {
-            throw new ApiError('Invalid pagination parameters', 400);
-        }
+        // Zod validation for pagination parameters
+        const { page, pageSize } = z.object({
+            page: z.preprocess(
+                (val) => parseInt(String(val), 10),
+                z.number().int().min(1).default(1)
+            ).optional(),
+            pageSize: z.preprocess(
+                (val) => parseInt(String(val), 10),
+                z.number().int().min(1).default(10)
+            ).optional(),
+        }).parse(req.query);
 
         const offset = (page - 1) * pageSize;
 
@@ -43,11 +50,12 @@ export const getDocumentById = async (
     next: NextFunction
 ) => {
     try {
-        const id = parseInt(req.params.id, 10);
-
-        if (isNaN(id)) {
-            throw new ApiError('Invalid document ID', 400);
-        }
+        const { id } = z.object({
+            id: z.preprocess(
+                (val) => parseInt(String(val), 10),
+                z.number().int().min(1, 'Document ID must be a positive integer')
+            ),
+        }).parse(req.params);
 
         const document = await documentModel.getDocumentById(id);
 
@@ -65,16 +73,12 @@ export const getDocumentById = async (
 };
 
 export const createDocument = async (
-    req: Request<{}, {}, CreateDocumentRequest>,
+    req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const { title, content, metadata } = req.body;
-
-        if (!title || !content) {
-            throw new ApiError('Title and content are required', 400);
-        }
+        const { title, content, metadata } = createDocumentSchema.parse(req.body);
 
         // Add document with its embedding
         const document = await searchService.addDocumentWithEmbedding(
@@ -94,22 +98,19 @@ export const createDocument = async (
 };
 
 export const updateDocument = async (
-    req: Request<{ id: string }, {}, UpdateDocumentRequest>,
+    req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const id = parseInt(req.params.id, 10);
+        const { id } = z.object({
+            id: z.preprocess(
+                (val) => parseInt(String(val), 10),
+                z.number().int().min(1, 'Document ID must be a positive integer')
+            ),
+        }).parse(req.params);
 
-        if (isNaN(id)) {
-            throw new ApiError('Invalid document ID', 400);
-        }
-
-        const { title, content, metadata } = req.body;
-
-        if (!title && !content && !metadata) {
-            throw new ApiError('At least one field to update is required', 400);
-        }
+        const { title, content, metadata } = updateDocumentSchema.parse(req.body);
 
         // Update document and its embedding if necessary
         const updatedDocument = await searchService.updateDocumentWithEmbedding(
@@ -135,11 +136,12 @@ export const deleteDocument = async (
     next: NextFunction
 ) => {
     try {
-        const id = parseInt(req.params.id, 10);
-
-        if (isNaN(id)) {
-            throw new ApiError('Invalid document ID', 400);
-        }
+        const { id } = z.object({
+            id: z.preprocess(
+                (val) => parseInt(String(val), 10),
+                z.number().int().min(1, 'Document ID must be a positive integer')
+            ),
+        }).parse(req.params);
 
         const result = await documentModel.deleteDocument(id);
 

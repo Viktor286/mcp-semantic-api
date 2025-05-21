@@ -1,7 +1,4 @@
 import winston from 'winston';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const logLevel = process.env.LOG_LEVEL || 'info';
 const isProduction = process.env.NODE_ENV === 'production';

@@ -1,8 +1,5 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
 import logger from '../utils/logger';
-
-dotenv.config();
 
 class EmbeddingService {
     private openai: OpenAI;

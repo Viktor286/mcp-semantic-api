@@ -17,11 +17,6 @@ const poolConfig: PoolConfig = {
     connectionTimeoutMillis: 2000, // How long to wait before timing out when connecting a new client
 };
 
-if (isProduction && process.env.DB_SSL === 'true') {
-    poolConfig.ssl = {
-        rejectUnauthorized: false // Only use this for development
-    };
-}
 
 const pool = new Pool(poolConfig);
 

@@ -9,7 +9,7 @@ import logger from './utils/logger';
 import dbService from './services/db.service';
 import startMcpServer from './mcp/server';
 
-dotenv.config();
+dotenv.config(); // This was the original position
 
 // Create Express server
 const app: Express = express();

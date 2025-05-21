@@ -1,10 +1,6 @@
-// src/mcp/server.ts
 import { createServer } from '@modelcontextprotocol/server';
 import { mcpTools, getToolDefinitions } from './tools';
-import dotenv from 'dotenv';
 import logger from '../utils/logger';
-
-dotenv.config();
 
 const startMcpServer = async () => {
     const port = parseInt(process.env.MCP_SERVER_PORT || '8080', 10);

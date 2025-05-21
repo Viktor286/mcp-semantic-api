@@ -1,4 +1,3 @@
-// scripts/seed-data.ts
 import searchService from '../src/services/search.service';
 import logger from '../src/utils/logger';
 
